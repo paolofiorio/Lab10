@@ -94,6 +94,38 @@ public class PortoDAO {
 		}
 		
 }
+
+	public List<Author> getCoAutori(Author a) {
+		
+		String sql="SELECT DISTINCT a2.id, a2.lastname, a2.firstname " + 
+				"FROM creator c1, creator c2, author a2 " + 
+				"WHERE c1.eprintid=c2.eprintid " + 
+				"AND c2.authorid=a2.id " + 
+				"AND c1.authorid= ? " + 
+				"AND a2.id <> c1.authorid "+ 
+				"ORDER BY a2.lastname ASC, a2.firstname ASC";
+		
+		Connection conn = DBConnect.getConnection() ;
+		
+		List<Author> coautori = new ArrayList<>() ;
+		
+		try {
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, a.getId());
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				
+				coautori.add(new Author(res.getInt("id"), res.getString("lastname"), res.getString("firstname"))) ;
+			}
+			
+			conn.close();
+			return coautori ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+		}	}
 	
 	
 	
