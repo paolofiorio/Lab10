@@ -127,7 +127,39 @@ public class PortoDAO {
 			throw new RuntimeException("Errore Db");
 		}	}
 	
-	
+	public Paper articoloComune(Author as, Author at) {
+		String sql = "SELECT paper.eprintid, title, issn, publication, type, types " + 
+				"FROM paper, creator c1, creator c2 " + 
+				"WHERE paper.eprintid=c1.eprintid " + 
+				"AND paper.eprintid=c2.eprintid " + 
+				"AND c1.authorid=? " + 
+				"AND c2.authorid=? " + 
+				"LIMIT 1" ;
+		
+		Connection conn = DBConnect.getConnection() ;
+		
+		try {
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, as.getId());
+			st.setInt(2, at.getId());
+			
+			ResultSet res = st.executeQuery() ;
+			
+			Paper p = null ;
+			if(res.next()) {
+				// c'è almeno un articolo: ritornalo!
+				p = new Paper(res.getInt("eprintid"), res.getString("title" ), res.getString("issn"),
+						res.getString("publication"), res.getString("type"), res.getString("types")) ;
+			}
+			
+			conn.close();
+			return p ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+}
 	
 	
 }

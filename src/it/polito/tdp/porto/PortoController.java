@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import it.polito.tdp.porto.model.Author;
 import it.polito.tdp.porto.model.Model;
+import it.polito.tdp.porto.model.Paper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -62,7 +63,22 @@ public class PortoController {
 
     @FXML
     void handleSequenza(ActionEvent event) {
-
+    	txtResult.clear();
+    	
+    	Author a1 = boxPrimo.getValue() ;
+    	Author a2 = boxSecondo.getValue() ;
+    	
+    	if( a1==null || a2==null ) {
+    		txtResult.appendText("Errore: selezionare due autori\n");
+    		return ;
+    	}
+    	
+    	List<Paper> articoli = model.sequenzaArticoli(a1, a2) ;
+    	
+    	txtResult.appendText("Articoli che collegano "+a1.toString()+" e "+a2.toString()+":\n");
+    	for(Paper p: articoli) {
+    		txtResult.appendText(p.getTitle()+"\n");
+}
     }
 
     @FXML
